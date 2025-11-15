@@ -1,0 +1,22 @@
+services:
+  talker:
+    build: ./talker
+    ports:
+      - "8888:8888"
+    cap_add:
+      - NET_ADMIN
+    networks:
+      - talk-net
+  listener:
+    build: ./listener
+    depends_on:
+      - talker
+    command: ["python", "listener.py", "talker", "8888"]
+    networks:
+      - talk-net
+    deploy:
+      replicas: 10
+
+networks:
+  talk-net:
+    driver: bridge
